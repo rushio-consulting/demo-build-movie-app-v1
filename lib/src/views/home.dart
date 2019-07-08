@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:learn_flutter/src/mock/movies.dart';
 import 'package:learn_flutter/src/models/movie.dart';
+import 'package:learn_flutter/src/api/api.dart' as rest_api;
 
 class HomeView extends StatefulWidget {
   HomeView({Key key, this.title}) : super(key: key);
@@ -23,8 +24,11 @@ class _HomeViewState extends State<HomeView> {
     _loadMovies();
   }
 
-  _loadMovies() {
-    movies = getMockMovies();
+  _loadMovies() async {
+    MoviesResponse movieResponse = await rest_api.topRatedMovies();
+    setState(() {
+      movies = movieResponse.movies;
+    });
   }
 
   @override
@@ -43,7 +47,6 @@ class _HomeViewState extends State<HomeView> {
 
           return Container(
             height: 50,
-            color: Colors.amber[colorCodes[index]],
             child: Center(
               child: Text(
                 "$originalTitle - Date : $releaseDate",
