@@ -45,17 +45,73 @@ class _HomeViewState extends State<HomeView> {
           String originalTitle = movie.originalTitle;
           String releaseDate = movie.releaseDate;
 
-          return Container(
-            height: 50,
-            child: Center(
-              child: Text(
-                "$originalTitle - Date : $releaseDate",
-                style: TextStyle(height: 3.0),
-              ),
-            ),
-          );
+          return MovieWidget(movie);
         },
         separatorBuilder: (BuildContext context, int index) => const Divider(),
+      ),
+    );
+  }
+}
+
+// Widget sans état
+class MovieWidget extends StatelessWidget {
+
+  final Movie movie;
+
+  MovieWidget(this.movie);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 284,
+                child: Image.network(
+                  'http://image.tmdb.org/t/p/w185/${movie.posterPath}',
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  movie.title,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+              ),
+              Text(
+                movie.overview,
+                style: TextStyle(color: Colors.black54),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.calendar_today),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          movie.releaseDate,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        movie.favorite ? Icons.star : Icons.star_border,
+                        color: movie.favorite ? Colors.yellow : Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
