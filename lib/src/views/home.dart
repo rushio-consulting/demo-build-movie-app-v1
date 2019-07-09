@@ -1,8 +1,12 @@
+import 'dart:io';
+import 'dart:convert';
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:learn_flutter/src/mock/movies.dart';
 import 'package:learn_flutter/src/models/movie.dart';
 import 'package:learn_flutter/src/api/api.dart' as rest_api;
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 class HomeView extends StatefulWidget {
   HomeView({Key key, this.title}) : super(key: key);
@@ -14,7 +18,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final List<int> colorCodes = <int>[600, 500, 100];
+  bool loading = true;
   List<Movie> movies = [];
 
   @override
@@ -29,6 +33,61 @@ class _HomeViewState extends State<HomeView> {
     setState(() {
       movies = movieResponse.movies;
     });
+    _loadFavorites();
+  }
+
+  Future<void> _loadFavorites() async {
+    final d = await path_provider.getApplicationDocumentsDirectory();
+    final favoriteFile = File('${d.path}/favorite.db');
+    if (!favoriteFile.existsSync()) {
+      favoriteFile.createSync();
+    }
+
+    final lines = favoriteFile.openRead()
+        .transform(utf8.decoder) // Decode bytes to UTF-8.
+        .transform(LineSplitter()); // Convert stream to individual lines.
+
+    await for (final line in lines) {
+      final movie = movies.firstWhere((m) => m.id == int.tryParse(line) ?? -1,
+          orElse: () => null);
+      movie?.favorite = true;
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
+  Future<void> _onTapMovie(Movie m) async {
+    for (final movie in movies) {
+      if (movie.id == m.id) {
+        final favoriteState = movie.favorite;
+
+        // Changement d'etat visuel dans l'application sur le setState
+        setState(() {
+          movie.favorite = !movie.favorite;
+        });
+
+        final d = await path_provider.getApplicationDocumentsDirectory();
+        final favoriteFile = File('${d.path}/favorite.db');
+
+        final lines = favoriteFile.openRead()
+            .transform(utf8.decoder) // Decode bytes to UTF-8.
+            .transform(LineSplitter()); // Convert stream to individual lines.
+
+        if (!favoriteState) {
+          favoriteFile.writeAsStringSync('${m.id}\n', mode: FileMode.append);
+        } else {
+          final content =
+              await lines.where((line) => line != '${m.id}').toList();
+          favoriteFile.writeAsStringSync(
+            content.join('\n'),
+            mode: FileMode.write,
+          );
+        }
+
+        break;
+      }
+    }
   }
 
   @override
@@ -37,28 +96,35 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: ListView.separated(
-        padding: const EdgeInsets.all(8.0),
-        itemCount: movies.length,
-        itemBuilder: (BuildContext context, int index) {
-          Movie movie = movies[index];
-          String originalTitle = movie.originalTitle;
-          String releaseDate = movie.releaseDate;
+      body: loading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.separated(
+              padding: const EdgeInsets.all(8.0),
+              itemCount: movies.length,
+              itemBuilder: (BuildContext context, int index) {
+                Movie movie = movies[index];
+                String originalTitle = movie.originalTitle;
+                String releaseDate = movie.releaseDate;
 
-          return MovieWidget(movie);
-        },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
-      ),
+                return MovieWidget(movie, _onTapMovie);
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
+            ),
     );
   }
 }
 
+typedef Future<void> OnTapMovie(Movie m);
+
 // Widget sans état
 class MovieWidget extends StatelessWidget {
+  // Référence vers la méthode définie en typedef : OnTapMovie
+  final OnTapMovie onTap;
 
   final Movie movie;
 
-  MovieWidget(this.movie);
+  MovieWidget(this.movie, this.onTap);
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +171,9 @@ class MovieWidget extends StatelessWidget {
                         movie.favorite ? Icons.star : Icons.star_border,
                         color: movie.favorite ? Colors.yellow : Colors.black,
                       ),
+                      onPressed: () {
+                        onTap(movie);
+                      },
                     ),
                   ],
                 ),
