@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:learn_flutter/src/models/movie.dart';
 import 'package:learn_flutter/src/api/api.dart' as rest_api;
 import 'package:path_provider/path_provider.dart' as path_provider;
+import 'package:share/share.dart';
 
 class HomeView extends StatefulWidget {
   HomeView({Key key, this.title}) : super(key: key);
@@ -43,7 +44,8 @@ class _HomeViewState extends State<HomeView> {
       favoriteFile.createSync();
     }
 
-    final lines = favoriteFile.openRead()
+    final lines = favoriteFile
+        .openRead()
         .transform(utf8.decoder) // Decode bytes to UTF-8.
         .transform(LineSplitter()); // Convert stream to individual lines.
 
@@ -70,7 +72,8 @@ class _HomeViewState extends State<HomeView> {
         final d = await path_provider.getApplicationDocumentsDirectory();
         final favoriteFile = File('${d.path}/favorite.db');
 
-        final lines = favoriteFile.openRead()
+        final lines = favoriteFile
+            .openRead()
             .transform(utf8.decoder) // Decode bytes to UTF-8.
             .transform(LineSplitter()); // Convert stream to individual lines.
 
@@ -95,6 +98,14 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () {
+              Share.share("Hello from ${widget.title}");
+            },
+          )
+        ],
       ),
       body: loading
           ? Center(child: CircularProgressIndicator())
