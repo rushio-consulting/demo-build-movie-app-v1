@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:learn_flutter/src/views/fav.dart';
 import 'package:learn_flutter/src/views/home.dart';
 
 class MyApp extends StatelessWidget {
@@ -20,7 +21,12 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: HomeView(title: 'Stack Day - Learn Flutter'),
+      //home: HomeView(title: 'Stack Day - Learn Flutter'),
+      initialRoute: '/',
+      routes: <String, WidgetBuilder> {
+        '/': (context) =>  HomeView(title: 'Stack Day - Learn Flutter'),
+        '/favorites': (context) => FavoritesView()
+      },
     );
   }
 }

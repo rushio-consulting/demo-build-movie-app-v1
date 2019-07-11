@@ -93,6 +93,31 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
+  _handleShowFavorites() =>  Navigator.popAndPushNamed(context, '/favorites');
+
+  // Drawer is a ListView with entries
+  Widget _buildDrawer(BuildContext context) {
+    return  Drawer(
+      child:  ListView(
+        children: <Widget>[
+          DrawerHeader(
+              child:  Container(child:  Text("Menu"))),
+          const ListTile(
+            leading: const Icon(Icons.assessment),
+            title: const Text('Home'),
+            selected: true,
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Favorites'),
+            onTap: _handleShowFavorites,
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,6 +132,7 @@ class _HomeViewState extends State<HomeView> {
           )
         ],
       ),
+      drawer: _buildDrawer(context),
       body: loading
           ? Center(child: CircularProgressIndicator())
           : ListView.separated(
