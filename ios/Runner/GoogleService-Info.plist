@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>361214309087-eggtodvp2ataqqcok3dedoj8gmdsc4bt.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.361214309087-eggtodvp2ataqqcok3dedoj8gmdsc4bt</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDeAivd7uesIaVAu0x9--dpDGPkv4G-b3Q</string>
+	<key>GCM_SENDER_ID</key>
+	<string>361214309087</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.learnFlutter</string>
+	<key>PROJECT_ID</key>
+	<string>stack-day-learn-flutter-bwn</string>
+	<key>STORAGE_BUCKET</key>
+	<string>stack-day-learn-flutter-bwn.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:361214309087:ios:8b0bf28e9bfd5eff</string>
+	<key>DATABASE_URL</key>
+	<string>https://stack-day-learn-flutter-bwn.firebaseio.com</string>
+</dict>
+</plist>

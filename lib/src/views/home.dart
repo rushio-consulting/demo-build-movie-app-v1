@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:learn_flutter/src/api/api.dart';
 import 'package:learn_flutter/src/models/movie.dart';
 import 'package:learn_flutter/src/api/api.dart' as rest_api;
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -60,6 +61,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> _onTapMovie(Movie m) async {
+
     for (final movie in movies) {
       if (movie.id == m.id) {
         final favoriteState = movie.favorite;
@@ -68,6 +70,8 @@ class _HomeViewState extends State<HomeView> {
         setState(() {
           movie.favorite = !movie.favorite;
         });
+
+        await addStackLabsMovieToFirestore(m);
 
         final d = await path_provider.getApplicationDocumentsDirectory();
         final favoriteFile = File('${d.path}/favorite.db');
